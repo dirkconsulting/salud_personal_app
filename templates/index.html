@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Diario de Salud</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <h1>Registro Diario - {{ today }}</h1>
+<!-- Menú de navegación -->
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('index') }}">Inicio</a></li>
+                <li><a href="{{ url_for('alimentacion') }}">Alimentación</a></li>
+                <!-- Puedes agregar más enlaces aquí -->
+            </ul>
+        </nav>
+
+    <form method="POST">
+        <div class="seccion">
+            <label><strong>Dolor (0-10):</strong></label><br>
+            <input type="number" name="dolor" min="0" max="10"><br><br>    
+
+            <label><strong>Digestión:</strong></label><br>
+            <input type="text" name="digestion"><br><br>    
+
+            <label><strong>Energía (0-10):</strong></label><br>
+            <input type="number" name="energia" min="0" max="10"><br><br>    
+
+            <label><strong>Notas:</strong></label><br>
+            <textarea name="notas" rows="4" cols="50"></textarea><br>
+        </div>    
+
+        <div class="seccion">
+            <h3>💊 Suplementos tomados hoy:</h3>    
+
+            <h4>Mañana (en ayunas):</h4>
+            {% for s in suplementos %}
+                {% if s.hora == 'Mañana' %}
+                    <label class="suplemento-item">
+                        <input type="checkbox" name="suplementos" value="{{ s.id }}"> {{ s.descripcion }}
+                    </label><br>
+                {% endif %}
+            {% endfor %}    
+
+            <h4>Mediodía (con la comida principal):</h4>
+            {% for s in suplementos %}
+                {% if s.hora == 'Mediodía' %}
+                    <label class="suplemento-item">
+                        <input type="checkbox" name="suplementos" value="{{ s.id }}"> {{ s.descripcion }}
+                    </label><br>
+                {% endif %}
+            {% endfor %}    
+
+            <h4>Noche (antes de dormir):</h4>
+            {% for s in suplementos %}
+                {% if s.hora == 'Noche' %}
+                    <label class="suplemento-item">
+                        <input type="checkbox" name="suplementos" value="{{ s.id }}"> {{ s.descripcion }}
+                    </label><br>
+                {% endif %}
+            {% endfor %}    
+
+            <h4>Suplementos Prioritarios:</h4>
+            <ul>
+                <li>Glutamina: Regenera la mucosa intestinal y mejora permeabilidad.</li>
+                <li>Omega-3: Antiinflamatorio clave.</li>
+                <li>NAC: Protege hígado, mucosa y sistema inmune.</li>
+                <li>Curcuma + pimienta: Antiinflamatorio digestivo.</li>
+                <li>Zinc: Refuerza inmunidad y reparación intestinal.</li>
+                <li>Magnesio: Relaja músculo, mejora sueño y sistema nervioso.</li>
+                <li>Probióticos post-antibiótico: Restaura la microbiota.</li>
+            </ul>
+        </div>    
+
+        <div class="seccion">
+            <h3>🏋️ Ejercicios realizados:</h3>
+            {% for e in ejercicios %}
+                <label>
+                    <input type="checkbox" name="ejercicios" value="{{ e.id }}"> <strong>{{ e.nombre }}</strong>
+                </label><br>
+                <div class="explicacion">
+                    {{ e.descripcion }}<br>
+                    <em>Series:</em> {{ e.series }} | <em>Reps:</em> {{ e.repeticiones }}
+                </div><br>
+            {% endfor %}
+        </div>    
+
+        <input type="submit" value="Guardar">
+    </form>
+
+    <hr>
+    <h2>📅 Historial</h2>
+        <table border="1" cellpadding="5" class="tabla-historial">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Dolor</th>
+                    <th>Digestión</th>
+                    <th>Energía</th>
+                    <th>Notas</th>
+                    <th>Suplementos</th>
+                    <th>Ejercicios</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in registros %}
+                <tr>
+                    <td>{{ r.fecha }}</td>
+                    <td>{{ r.dolor }}</td>
+                    <td>{{ r.digestion }}</td>
+                    <td>{{ r.energia }}</td>
+                    <td>{{ r.notas }}</td>
+                    <td>
+                        {% for s in r.suplementoregistro %}
+                            {{ s.suplemento.nombre }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for e in r.ejercicioregistro %}
+                            {{ e.ejercicio.nombre }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+</body>
+</html>

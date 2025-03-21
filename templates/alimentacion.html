@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alimentación</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <h1>Alimentación</h1>
+
+    <!-- Filtros -->
+    <form method="get">
+        <h2>Filtros</h2>
+        <label for="filtro_tipo">Tipo de alimento:</label>
+        <select name="filtro_tipo" id="filtro_tipo">
+            <option value="">-- Todos --</option>
+            {% for tipo in tipos_alimento %}
+                <option value="{{ tipo }}" {% if filtro_tipo == tipo %}selected{% endif %}>{{ tipo }}</option>
+            {% endfor %}
+        </select><br>
+
+        <label for="filtro_categoria">Categoría:</label>
+        <select name="filtro_categoria" id="filtro_categoria">
+            <option value="">-- Todas --</option>
+            {% for categoria in categorias_alimento %}
+                <option value="{{ categoria }}" {% if filtro_categoria == categoria %}selected{% endif %}>{{ categoria }}</option>
+            {% endfor %}
+        </select><br>
+
+        <label for="filtro_receta">Tipo de receta:</label>
+        <select name="filtro_receta" id="filtro_receta">
+            <option value="">-- Todas --</option>
+            {% for tipo in tipos_receta %}
+                <option value="{{ tipo }}" {% if filtro_receta == tipo %}selected{% endif %}>{{ tipo }}</option>
+            {% endfor %}
+        </select><br>
+
+        <button type="submit">Aplicar filtros</button>
+    </form>
+
+    <!-- Lista de alimentos -->
+    <div class="section">
+        <h2>Alimentos</h2>
+        <ul>
+            {% for alimento in alimentos %}
+                <li><strong>{{ alimento.nombre }}</strong> ({{ alimento.tipo }} - {{ alimento.categoria }})</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Lista de recetas -->
+    <div class="section">
+        <h2>Recetas</h2>
+        <ul>
+            {% for receta in recetas %}
+                <li>
+                    <strong>{{ receta.titulo }}</strong> ({{ receta.tipo }})<br>
+                    Ingredientes: {{ receta.ingredientes }}<br>
+                    Pasos: {{ receta.pasos }}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Formulario para añadir alimento -->
+    <div class="section">
+        <h2>Añadir nuevo alimento</h2>
+        <form method="post">
+            <input type="hidden" name="nuevo_alimento" value="1">
+            <label for="nombre_alimento">Nombre:</label>
+            <input type="text" name="nombre_alimento" required><br>
+
+            <label for="tipo_alimento">Tipo:</label>
+            <select name="tipo_alimento" required>
+                {% for tipo in tipos_alimento %}
+                    <option value="{{ tipo }}">{{ tipo }}</option>
+                {% endfor %}
+            </select><br>
+
+            <label for="categoria_alimento">Categoría:</label>
+            <select name="categoria_alimento" required>
+                {% for categoria in categorias_alimento %}
+                    <option value="{{ categoria }}">{{ categoria }}</option>
+                {% endfor %}
+            </select><br>
+
+            <button type="submit">Añadir alimento</button>
+        </form>
+    </div>
+
+    <!-- Formulario para añadir receta -->
+    <div class="section">
+        <h2>Añadir nueva receta</h2>
+        <form method="post">
+            <input type="hidden" name="nueva_receta" value="1">
+
+            <label for="titulo">Título:</label>
+            <input type="text" name="titulo" required><br>
+
+            <label for="tipo_receta">Tipo:</label>
+            <select name="tipo_receta" required>
+                {% for tipo in tipos_receta %}
+                    <option value="{{ tipo }}">{{ tipo }}</option>
+                {% endfor %}
+            </select><br>
+
+            <label for="ingredientes">Ingredientes:</label><br>
+            <textarea name="ingredientes" rows="3" required></textarea><br>
+
+            <label for="pasos">Pasos:</label><br>
+            <textarea name="pasos" rows="3" required></textarea><br>
+
+            <button type="submit">Añadir receta</button>
+        </form>
+    </div>
+</body>
+</html>
